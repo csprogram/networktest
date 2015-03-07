@@ -1,8 +1,8 @@
 # A Simple Network Speed Test Program
 
-This program will fetch the specify network resources every 5 minutes(default).
+This program will fetch the specify network resources every 5 minutes (default) and record the spend time.
 
-There two collection of resource: 
+The specify resources were defined in these two files: 
 * src/main/resources/big.properties
 * src/main/resources/small.properties
 
@@ -10,13 +10,15 @@ There is a pre-build executable package in the folder `dist`, you can download t
 
 Build the executable package
 ---------------------------
-1. First make sure you installed java 1.7 or above (OpenJDK or Oracle JDK should be fine).
+1. First make sure you have installed java 1.7 or above (OpenJDK or Oracle JDK would be fine).
 2. Install and configure Apache Maven.
-3. Check out the source and execute ` $ mvn clean package`
-4. It will generates file target/networktest-1.0-SNAPSHOT-jar-with-dependencies.jar
+3. Check out the source and execute ` $ mvn clean package`.
+4. It will generates a file `target/networktest-1.0-SNAPSHOT-jar-with-dependencies.jar`.
 
 Run
 ---
-Just type this command in console/terminal:
+In Linux or OSX just type this command in the console/terminal:
 
 `$ java -jar YOUR-BUILDED.jar`
+
+In Windows you can double-click the builded file in the file explorer.

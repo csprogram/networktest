@@ -128,7 +128,11 @@ public class Downloader {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
 		writer.write(new Date().toString());
 		for(int idx=0; idx<result.size(); idx++) {
-			writer.write("\t" + result.get(idx).toString());
+			if (result.get(idx) == null){
+				writer.write("\t0");
+			}else{
+				writer.write("\t" + result.get(idx).toString());
+			}
 		}
 		writer.newLine();
 		writer.close();
