@@ -1,0 +1,2 @@
+#!/bin/bash
+cp target/networktest-1.0-SNAPSHOT-jar-with-dependencies.jar dist/networktest-1.0.jar
