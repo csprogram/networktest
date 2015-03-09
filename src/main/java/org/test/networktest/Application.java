@@ -3,8 +3,6 @@ package org.test.networktest;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Timer;
 
 /**
  *
@@ -12,7 +10,7 @@ import java.util.Timer;
  */
 public class Application {
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, InterruptedException{
 	
 		System.out.println("Network speed test");
 		System.out.println("==================");
@@ -42,11 +40,15 @@ public class Application {
 		
 		Task task = new Task(profiles);
 		
-		// run the first time
-		task.run(); 
+		while(true){
+			task.run(); 
 		
-		// schedule
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(task, 3 * 60 * 1000, 5 * 1000);
+			System.out.println("All profiles complete, please wait 3 minutes to start the next turn...");
+			System.out.println("Press Ctrl+C to exit.");
+			System.out.println();
+			
+			Thread.sleep(3L * 60 * 1000);
+		}
+		
 	}
 }

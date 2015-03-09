@@ -26,8 +26,6 @@ import java.util.Set;
 public class Downloader {
 
 	private File profile;
-	private boolean printHeader = true;
-	
 	private List<Map.Entry<Object, Object>> resources = new ArrayList<>();
 	
 	public Downloader(File profile) throws IOException{
@@ -112,12 +110,16 @@ public class Downloader {
 	}
 	
 	private void save(List<Double> result) throws IOException{
-		File file = new File(profile.getName() + "-result.txt");
+		String name = profile.getName();
+		int dotPos = name.indexOf(".");
+		String resultFilename = name.substring(0, dotPos) + ".txt";
+		File file = new File(resultFilename);
+		boolean exists = file.exists();
 		
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
 		
-		if (printHeader) {
-			printHeader = false;
+		if (!exists) {
+			// print header
 			writer.write("Time");
 			for(Map.Entry<Object, Object> entry : resources) {
 				writer.write("\t" + entry.getKey());
