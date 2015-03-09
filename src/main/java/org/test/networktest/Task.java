@@ -1,5 +1,6 @@
 package org.test.networktest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
 
@@ -9,7 +10,12 @@ import java.util.TimerTask;
  */
 public class Task extends TimerTask {
 
+	private File[] profiles;
 	private boolean runing;
+	
+	public Task(File[] profiles) {
+		this.profiles = profiles;
+	}
 	
 	@Override
 	public void run() {
@@ -20,25 +26,23 @@ public class Task extends TimerTask {
 		
 		runing = true;
 		
-		try{
-			Downloader downloaderSmall = new Downloader("small.properties");
-			downloaderSmall.run();
-		}catch(IOException e){
-			// ignore
+		for(File profile : profiles) {
+			try{
+				Downloader downloaderSmall = new Downloader(profile);
+				downloaderSmall.run();
+			}catch(IOException e){
+				// ignore
+			}
 		}
 		
-		try{
-			Downloader downloaderBig = new Downloader("big.properties");
-			downloaderBig.run();
-		}catch(IOException e){
-			// ignore
-		}
+		System.out.println("All profiles complete, please wait 3 minutes to start the next turn...");
+		System.out.println();
 		
 		runing = false;
 	}
 
-	public boolean isRuning() {
-		return runing;
-	}
+//	public boolean isRuning() {
+//		return runing;
+//	}
 	
 }

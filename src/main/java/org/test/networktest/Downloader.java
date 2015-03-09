@@ -3,6 +3,7 @@ package org.test.networktest;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,33 +25,32 @@ import java.util.Set;
  */
 public class Downloader {
 
-	private String profileName;
+	private File profile;
+	private boolean printHeader = true;
+	
 	private List<Map.Entry<Object, Object>> resources = new ArrayList<>();
 	
-	public Downloader(String resourceName) throws IOException{
-		int dotPos = resourceName.indexOf('.');
-		this.profileName = resourceName.substring(0, dotPos);
+	public Downloader(File profile) throws IOException{
+		this.profile = profile;
 		
-		InputStream in = Downloader.class.getClassLoader().getResourceAsStream(resourceName);
+		InputStream in = new FileInputStream(profile);
 		Properties properties = new Properties();
 		properties.load(in);
 		in.close();
 		
 		for (Map.Entry<Object, Object> entry : properties.entrySet()){
-			//String key = (String)keyObj;
-			//String value = (String)properties.get(key);
 			resources.add(entry);
 		}
 	}
 	
 	public void run(){
-		System.out.println("String profile " + profileName.toUpperCase() + " ...");
+		System.out.println("Starting profile " + profile.getName().toUpperCase() + " ...");
 		
 		List<Double> result = new ArrayList<>();
 		byte[] buffer = new byte[8 * 1024];
 		
 		for(Map.Entry<Object, Object> entry : resources) {
-			System.out.print("\t downloading " + entry.getKey() + " ... ");
+			System.out.print("\tdownloading " + entry.getKey() + " ... ");
 			
 			Date start = new Date();
 			
@@ -60,6 +60,7 @@ public class Downloader {
 				conn.setConnectTimeout(30 * 1000);
 				conn.setReadTimeout(30 * 1000);
 				conn.connect();
+				
 				InputStream in = conn.getInputStream();
 				while(true){
 					int read = in.read(buffer, 0, buffer.length);
@@ -81,10 +82,9 @@ public class Downloader {
 			}
 		}
 		
-		System.out.println("\tProfile end, the result is:");
-		System.out.println("\t-------------");
+		System.out.println("\tProfile end.");
 		
-		printResult(result);
+		//printResult(result);
 		
 		try{
 			save(result);
@@ -112,20 +112,19 @@ public class Downloader {
 	}
 	
 	private void save(List<Double> result) throws IOException{
-		File file = new File(profileName + ".txt");
-		
-		if (!file.exists()){
-			BufferedWriter headerWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-			headerWriter.write("Time");
-			for(Map.Entry<Object, Object> entry : resources) {
-				headerWriter.write("\t" + entry.getKey());
-			}
-			headerWriter.newLine();
-			headerWriter.close();
-		}
-		
+		File file = new File(profile.getName() + "-result.txt");
 		
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
+		
+		if (printHeader) {
+			printHeader = false;
+			writer.write("Time");
+			for(Map.Entry<Object, Object> entry : resources) {
+				writer.write("\t" + entry.getKey());
+			}
+			writer.newLine();
+		}
+		
 		writer.write(new Date().toString());
 		for(int idx=0; idx<result.size(); idx++) {
 			if (result.get(idx) == null){
